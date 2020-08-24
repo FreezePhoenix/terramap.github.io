@@ -481,9 +481,9 @@ function readTiles(reader, world) {
             }
         }
 
-        tilesProcessed += world.height;
+        tilesProcessed += world.height / 2;
 
-        if (x % 2 == 0) {
+        if (x % 2 == 0 || true) {
             self.postMessage({
                 'status': "Reading tile " + tilesProcessed + " of " + world.totalTileCount,
                 // 'tilesProcessed': tilesProcessed,

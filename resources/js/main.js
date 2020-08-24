@@ -37,20 +37,20 @@ var selectionX = 0;
 var selectionY = 0;
 
 var panzoom = $("#panzoomContainer").panzoom({
-  cursor: "default",
-  maxScale: 20,
-  increment: 0.3,
+    cursor: "default",
+    maxScale: 20,
+    increment: 0.3,
 });
 
 $("#status").html("Checking File APIs...");
 
 // Check for the various File API support.
 if (window.File && window.FileReader && window.FileList && window.Blob) {
-  $("#file").css("visibility", "visible");
-  $("#file").on('change', fileNameChanged);
-	$("#status").html("Please choose a Terraria .wld file.");
+    $("#file").css("visibility", "visible");
+    $("#file").on('change', fileNameChanged);
+    $("#status").html("Please choose a Terraria .wld file.");
 } else {
-	$("#status").html("The File APIs are not fully supported in this browser.");
+    $("#status").html("The File APIs are not fully supported in this browser.");
 }
 
 resizeCanvases();
@@ -65,123 +65,123 @@ sortAndAddSelectOptions();
 addSetListItems();
 
 function addSetListItems() {
-  for(var i = 0; i < sets.length; i++) {
-    var set = sets[i];
+    for (var i = 0; i < sets.length; i++) {
+        var set = sets[i];
 
-    for(var j = 0; j < set.Entries.length; j++) {
-      var entry = set.Entries[j];
-      if(entry.U || entry.V) {
-        var tileInfo = getTileInfoFrom(entry.Id, entry.U, entry.V);
-        if(tileInfo) {
-          set.Entries[j] = tileInfo;
+        for (var j = 0; j < set.Entries.length; j++) {
+            var entry = set.Entries[j];
+            if (entry.U || entry.V) {
+                var tileInfo = getTileInfoFrom(entry.Id, entry.U, entry.V);
+                if (tileInfo) {
+                    set.Entries[j] = tileInfo;
+                }
+            }
         }
-      }
-    }
 
-    $("#setList").append('<li><a href="#" onclick="highlightSet(' + i + ')">' + set.Name + '</a></li>');
-  }
+        $("#setList").append('<li><a href="#" onclick="highlightSet(' + i + ')">' + set.Name + '</a></li>');
+    }
 }
 
 function highlightSet(setIndex) {
-  var set = sets[setIndex];
+    var set = sets[setIndex];
 
-  highlightInfos(set.Entries);
+    highlightInfos(set.Entries);
 }
 
 function sortAndAddSelectOptions() {
-  options.sort(compareOptions);
+    options.sort(compareOptions);
 
-  for(var i = 0; i < options.length; i++) {
-    var option = options[i];
+    for (var i = 0; i < options.length; i++) {
+        var option = options[i];
 
-    blockSelector.add(option);
-  }
+        blockSelector.add(option);
+    }
 }
 
 function addTileSelectOptions() {
-  for(var i = 0; i < settings.Tiles.length; i++) {
-    var tile = settings.Tiles[i];
+    for (var i = 0; i < settings.Tiles.length; i++) {
+        var tile = settings.Tiles[i];
 
-    tile.isTile = true;
+        tile.isTile = true;
 
-    var option = document.createElement("option");
-    option.text = tile.Name;
-    option.value = i;
-    options.push(option);
-
-    if(tile.Frames) {
-      for(var frameIndex = 0; frameIndex < tile.Frames.length; frameIndex++) {
-        var frame = tile.Frames[frameIndex];
-        frame.isTile = true;
-
-        option = document.createElement("option");
+        var option = document.createElement("option");
         option.text = tile.Name;
         option.value = i;
-
-        var attribute = document.createAttribute("data-u");
-        attribute.value = frame.U;
-        option.setAttributeNode(attribute);
-
-        attribute = document.createAttribute("data-v");
-        attribute.value = frame.V;
-        option.setAttributeNode(attribute);
-
-        if(frame.Name) {
-          option.text += " - " + frame.Name;
-        }
-
-        if(frame.Variety) {
-          option.text += " - " + frame.Variety;
-        }
-
-        option.text += " (Tile)";
-
         options.push(option);
-      }
+
+        if (tile.Frames) {
+            for (var frameIndex = 0; frameIndex < tile.Frames.length; frameIndex++) {
+                var frame = tile.Frames[frameIndex];
+                frame.isTile = true;
+
+                option = document.createElement("option");
+                option.text = tile.Name;
+                option.value = i;
+
+                var attribute = document.createAttribute("data-u");
+                attribute.value = frame.U;
+                option.setAttributeNode(attribute);
+
+                attribute = document.createAttribute("data-v");
+                attribute.value = frame.V;
+                option.setAttributeNode(attribute);
+
+                if (frame.Name) {
+                    option.text += " - " + frame.Name;
+                }
+
+                if (frame.Variety) {
+                    option.text += " - " + frame.Variety;
+                }
+
+                option.text += " (Tile)";
+
+                options.push(option);
+            }
+        }
     }
-  }
 }
 
 function addItemSelectOptions() {
-  for(var i = 0; i < settings.Items.length; i++) {
-    var item = settings.Items[i];
+    for (var i = 0; i < settings.Items.length; i++) {
+        var item = settings.Items[i];
 
-    item.isItem = true;
+        item.isItem = true;
 
-    var option = document.createElement("option");
-    option.text = item.Name + " (Item)";
-    option.value = "item" + item.Id;
-    options.push(option);
-  }
+        var option = document.createElement("option");
+        option.text = item.Name + " (Item)";
+        option.value = "item" + item.Id;
+        options.push(option);
+    }
 }
 
 function addWallSelectOptions() {
-  for(var i = 0; i < settings.Walls.length; i++) {
-    var wall = settings.Walls[i];
+    for (var i = 0; i < settings.Walls.length; i++) {
+        var wall = settings.Walls[i];
 
-    wall.isWall = true;
+        wall.isWall = true;
 
-    var option = document.createElement("option");
-    option.text = wall.Name + " (Wall)";
-    option.value = "wall" + wall.Id;
-    options.push(option);
-  }
+        var option = document.createElement("option");
+        option.text = wall.Name + " (Wall)";
+        option.value = "wall" + wall.Id;
+        options.push(option);
+    }
 }
 
-function compareOptions(a,b) {
-  if (a.text < b.text)
-    return -1;
-  if (a.text > b.text)
-    return 1;
-  return 0;
+function compareOptions(a, b) {
+    if (a.text < b.text)
+        return -1;
+    if (a.text > b.text)
+        return 1;
+    return 0;
 }
 
-$('#chooseBlocksModal').on('shown.bs.modal', function () {
-  $('#blocksFilter').focus();
+$('#chooseBlocksModal').on('shown.bs.modal', function() {
+    $('#blocksFilter').focus();
 });
 
 $(document).bind('keydown', 'ctrl+b', function() {
-  $('#chooseBlocksModal').modal();
+    $('#chooseBlocksModal').modal();
 });
 
 // filter blocks
@@ -190,7 +190,12 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
         var select = this;
         var options = [];
         $(select).find('option').each(function() {
-            options.push({value: $(this).val(), text: $(this).text(), u: $(this).attr('data-u'), v: $(this).attr('data-v')});
+            options.push({
+                value: $(this).val(),
+                text: $(this).text(),
+                u: $(this).attr('data-u'),
+                v: $(this).attr('data-v')
+            });
         });
         $(select).data('options', options);
         $(textbox).bind('change keyup', function() {
@@ -200,13 +205,13 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
 
             $.each(options, function(i) {
                 var option = options[i];
-                if(option.text.match(regex) !== null) {
-                  var newOption = $('<option>');
-                  newOption.text(option.text);
-                  newOption.val(option.value);
-                  newOption.attr('data-u', option.u);
-                  newOption.attr('data-v', option.v);
-                  $(select).append(newOption);
+                if (option.text.match(regex) !== null) {
+                    var newOption = $('<option>');
+                    newOption.text(option.text);
+                    newOption.val(option.value);
+                    newOption.attr('data-u', option.u);
+                    newOption.attr('data-v', option.v);
+                    $(select).append(newOption);
                 }
             });
             if (selectSingleMatch === true && $(select).children().length === 1) {
@@ -214,788 +219,793 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
             }
         });
     });
-};
+}
+;
 
 $(function() {
     $('#blocks').filterByText($('#blocksFilter'), true);
 });
 
-$(window).resize(function () {
-  $('body').css('padding-top', parseInt($('#main-navbar').css("height"))+10);
+$(window).resize(function() {
+    $('body').css('padding-top', parseInt($('#main-navbar').css("height")) + 10);
 
-//   canvasContainer.height = window.innerHeight;
-//   $('#canvasContainer').css("height", window.innerHeight + "px");
-  $('#canvasContainer').css("overflow", "visible");
+    //   canvasContainer.height = window.innerHeight;
+    //   $('#canvasContainer').css("height", window.innerHeight + "px");
+    $('#canvasContainer').css("overflow", "visible");
 });
 
-$(window).load(function () {
-   $('body').css('padding-top', parseInt($('#main-navbar').css("height"))+10);
+$(window).load(function() {
+    $('body').css('padding-top', parseInt($('#main-navbar').css("height")) + 10);
 });
 
 // handle scrolling in and out
 panzoom.parent().on('mousewheel.focal', onMouseWheel);
 
 function onMouseWheel(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  var delta = e.delta || e.originalEvent.wheelDelta;
-  var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
+    var delta = e.delta || e.originalEvent.wheelDelta;
+    var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
 
-  var transform = $(panzoomContainer).panzoom('getMatrix');
-  var scale = transform[0];
+    var transform = $(panzoomContainer).panzoom('getMatrix');
+    var scale = transform[0];
 
-  panzoom.panzoom('zoom', zoomOut, {
-      increment   : 0.3 * scale,
-      animate     : true,
-      focal       : e
-  });
+    panzoom.panzoom('zoom', zoomOut, {
+        increment: 0.3 * scale,
+        animate: true,
+        focal: e
+    });
 }
 
 $(document).bind('keydown', 'e', zoomIn);
 $(document).bind('keydown', 'c', zoomOut);
 
 function zoomIn() {
-  var transform = $(panzoomContainer).panzoom('getMatrix');
-  var scale = transform[0];
+    var transform = $(panzoomContainer).panzoom('getMatrix');
+    var scale = transform[0];
 
-  panzoom.panzoom('zoom', false, {
-      increment   : 0.3 * scale,
-      animate     : true
-  });
+    panzoom.panzoom('zoom', false, {
+        increment: 0.3 * scale,
+        animate: true
+    });
 }
 
 function zoomOut() {
-  var transform = $(panzoomContainer).panzoom('getMatrix');
-  var scale = transform[0];
+    var transform = $(panzoomContainer).panzoom('getMatrix');
+    var scale = transform[0];
 
-  panzoom.panzoom('zoom', true, {
-      increment   : 0.3 * scale,
-      animate     : true
-  });
+    panzoom.panzoom('zoom', true, {
+        increment: 0.3 * scale,
+        animate: true
+    });
 }
 
 function previousBlock(e) {
-  findBlock(-1);
+    findBlock(-1);
 }
 
 function nextBlock(e) {
-  findBlock(1);
+    findBlock(1);
 }
 
 function isTileMatch(tile, selectedInfos, x, y) {
-  for(var j = 0; j < selectedInfos.length; j++) {
-    var info = selectedInfos[j];
+    for (var j = 0; j < selectedInfos.length; j++) {
+        var info = selectedInfos[j];
 
-    // check the tile first
-    if(tile.info && info.isTile && (tile.info == info || (!info.parent && tile.Type == info.Id)))
-      return true;
+        // check the tile first
+        if (tile.info && info.isTile && (tile.info == info || (!info.parent && tile.Type == info.Id)))
+            return true;
 
-    // check the wall
-    if(info.isWall && tile.WallType == info.Id)
-      return true;
+        // check the wall
+        if (info.isWall && tile.WallType == info.Id)
+            return true;
 
-    // see if it's a chest
-    var chest = tile.chest;
-    if(chest && info.isItem) {
-      // see if the chest contains the item
-      for(var i = 0; i < chest.items.length; i++) {
-        var item = chest.items[i];
+        // see if it's a chest
+        var chest = tile.chest;
+        if (chest && info.isItem) {
+            // see if the chest contains the item
+            for (var i = 0; i < chest.items.length; i++) {
+                var item = chest.items[i];
 
-        if(info.Id == item.id) {
-          return true;
+                if (info.Id == item.id) {
+                    return true;
+                }
+            }
         }
-      }
     }
-  }
 
-  return false;
+    return false;
 }
 
 function findBlock(direction) {
-  if(!world)
-    return;
+    if (!world)
+        return;
 
-  var x = selectionX;
-  var y = selectionY + direction;
+    var x = selectionX;
+    var y = selectionY + direction;
 
-  var start = x * world.height + y;
+    var start = x * world.height + y;
 
-  var selectedInfos = getSelectedInfos();
+    var selectedInfos = getSelectedInfos();
 
-  if(selectedInfos.length > 0) {
-    for(var i = start; i >= 0 && i < world.tiles.length; i += direction) {
-      var tile = world.tiles[i];
+    if (selectedInfos.length > 0) {
+        for (var i = start; i >= 0 && i < world.tiles.length; i += direction) {
+            var tile = world.tiles[i];
 
-      var foundMatch = false;
+            var foundMatch = false;
 
-      if(isTileMatch(tile, selectedInfos, x, y)) {
-        selectionX = x;
-        selectionY = y;
+            if (isTileMatch(tile, selectedInfos, x, y)) {
+                selectionX = x;
+                selectionY = y;
 
-        drawSelectionIndicator();
-        // panzoom.panzoom('pan', (-overlayCanvas.width / 2) - x, (-overlayCanvas.height / 2) - y, { relative: false });
+                drawSelectionIndicator();
+                // panzoom.panzoom('pan', (-overlayCanvas.width / 2) - x, (-overlayCanvas.height / 2) - y, { relative: false });
 
-        foundMatch = true;
+                foundMatch = true;
 
-        break;
-      }
+                break;
+            }
 
-      y += direction;
+            y += direction;
 
-      if(y < 0 || y >= world.height) {
-        if(direction > 0)
-          y = 0;
-        else
-          y = world.height - 1;
-        x += direction;
-      }
+            if (y < 0 || y >= world.height) {
+                if (direction > 0)
+                    y = 0;
+                else
+                    y = world.height - 1;
+                x += direction;
+            }
 
-      if(foundMatch)
-        break;
+            if (foundMatch)
+                break;
+        }
     }
-  }
 }
 
 function highlightAll() {
-  if(!world)
-    return;
+    if (!world)
+        return;
 
-  var selectedInfos = getSelectedInfos();
+    var selectedInfos = getSelectedInfos();
 
-  highlightInfos(selectedInfos);
+    highlightInfos(selectedInfos);
 }
 
 function highlightInfos(selectedInfos) {
-  var x = 0;
-  var y = 0;
+    var x = 0;
+    var y = 0;
 
-  overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-  overlayCtx.fillStyle = "rgba(0, 0, 0, 0.75)";
-  overlayCtx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    overlayCtx.fillStyle = "rgba(0, 0, 0, 0.75)";
+    overlayCtx.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-  if(selectedInfos.length > 0) {
-    for(var i = 0; i < world.tiles.length; i++) {
-      var tile = world.tiles[i];
+    if (selectedInfos.length > 0) {
+        for (var i = 0; i < world.tiles.length; i++) {
+            var tile = world.tiles[i];
 
-      if(isTileMatch(tile, selectedInfos)) {
-        overlayCtx.fillStyle = "rgb(255, 255, 255)";
-        overlayCtx.fillRect(x / 2, y, 0.5, 1);
-      }
+            if (isTileMatch(tile, selectedInfos)) {
+                overlayCtx.fillStyle = "rgb(255, 255, 255)";
+                overlayCtx.fillRect(x / 2, y, 0.5, 1);
+            }
 
-      y++;
-      if(y >= world.height) {
-        y = 0;
-        x++;
-      }
+            y++;
+            if (y >= world.height) {
+                y = 0;
+                x++;
+            }
+        }
     }
-  }
 }
 
 function getSelectedInfos() {
-  var selectedInfos = [];
+    var selectedInfos = [];
 
-  var j;
-  var option;
+    var j;
+    var option;
 
-  for(j = 0; j < blockSelector.options.length; j++) {
-    option = blockSelector.options[j];
-    if(!option.selected)
-      continue;
+    for (j = 0; j < blockSelector.options.length; j++) {
+        option = blockSelector.options[j];
+        if (!option.selected)
+            continue;
 
-    var tileInfo = getTileInfoFromOption(option);
+        var tileInfo = getTileInfoFromOption(option);
 
-    if(tileInfo) {
-      selectedInfos.push(tileInfo);
-    }
-    else {
-      var itemInfo = getItemInfoFromOption(option);
-      if(itemInfo) {
-        selectedInfos.push(itemInfo);
-      }
-      else {
-        var wallInfo = getWallInfoFromOption(option);
-        if(wallInfo) {
-          selectedInfos.push(wallInfo);
+        if (tileInfo) {
+            selectedInfos.push(tileInfo);
+        } else {
+            var itemInfo = getItemInfoFromOption(option);
+            if (itemInfo) {
+                selectedInfos.push(itemInfo);
+            } else {
+                var wallInfo = getWallInfoFromOption(option);
+                if (wallInfo) {
+                    selectedInfos.push(wallInfo);
+                }
+            }
         }
-      }
     }
-  }
 
-  return selectedInfos;
+    return selectedInfos;
 }
 
 function getTileInfoFromOption(option) {
-  var tileInfo = getTileInfoFrom(option.value, option.getAttribute("data-u"), option.getAttribute("data-v"));
+    var tileInfo = getTileInfoFrom(option.value, option.getAttribute("data-u"), option.getAttribute("data-v"));
 
-  return tileInfo;
+    return tileInfo;
 }
 
 function getTileInfoFrom(id, u, v) {
-  var tileInfo = settings.Tiles[id];
+    var tileInfo = settings.Tiles[id];
 
-  if(tileInfo && tileInfo.Frames) {
-    for(var frameIndex = 0; frameIndex < tileInfo.Frames.length; frameIndex++) {
-      var frame = tileInfo.Frames[frameIndex];
+    if (tileInfo && tileInfo.Frames) {
+        for (var frameIndex = 0; frameIndex < tileInfo.Frames.length; frameIndex++) {
+            var frame = tileInfo.Frames[frameIndex];
 
-      if(u != frame.U)
-        continue;
+            if (u != frame.U)
+                continue;
 
-      if(v != frame.V)
-        continue;
+            if (v != frame.V)
+                continue;
 
-      frame.parent = tileInfo;
+            frame.parent = tileInfo;
 
-      return frame;
+            return frame;
+        }
     }
-  }
 
-  return tileInfo;
+    return tileInfo;
 }
 
 function getItemInfoFromOption(option) {
-  for(var i = 0; i < settings.Items.length; i++) {
-    var item = settings.Items[i];
+    for (var i = 0; i < settings.Items.length; i++) {
+        var item = settings.Items[i];
 
-    if(option.value == "item" + item.Id) {
-      return item;
+        if (option.value == "item" + item.Id) {
+            return item;
+        }
     }
-  }
 
-  return null;
+    return null;
 }
 
 function getWallInfoFromOption(option) {
-  for(var i = 0; i < settings.Walls.length; i++) {
-    var wall = settings.Walls[i];
+    for (var i = 0; i < settings.Walls.length; i++) {
+        var wall = settings.Walls[i];
 
-    if(option.value == "wall" + wall.Id) {
-      return wall;
+        if (option.value == "wall" + wall.Id) {
+            return wall;
+        }
     }
-  }
 
-  return null;
+    return null;
 }
 
 function getTileInfo(tile) {
-  var tileInfo = settings.Tiles[tile.Type];
+    const tileInfo = settings.Tiles[tile.Type];
 
-  if(!tileInfo) return tileInfo;
+    if (!tileInfo)
+        return tileInfo;
 
-  if(!tileInfo.Frames)
-    return tileInfo;
+    if (!tileInfo.Frames)
+        return tileInfo;
 
-  var matchingFrame;
+    let matchingFrame;
+    for (let i = 0, max = tileInfo.Frames.length; i < max; i++) {
+        const frame = tileInfo.Frames[i];
 
-  for(var i = 0; i < tileInfo.Frames.length; i++) {
-    var frame = tileInfo.Frames[i];
-
-    if((!frame.U && !tile.TextureU) || frame.U <= tile.TextureU) {
-      if((!frame.V && !tile.TextureV) || frame.V <= tile.TextureV)
-        matchingFrame = frame;
+        if ((!frame.U && !tile.TextureU) || frame.U <= tile.TextureU) {
+            if ((!frame.V && !tile.TextureV) || frame.V <= tile.TextureV)
+                matchingFrame = frame;
+        }
     }
-  }
 
-  if(!matchingFrame)
-    return tileInfo;
+    if (!matchingFrame)
+        return tileInfo;
 
-  matchingFrame.parent = tileInfo;
+    matchingFrame.parent = tileInfo;
 
-  return matchingFrame;
+    return matchingFrame;
 }
 
 function clearHighlight() {
-  overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-  selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
 }
 
 function clearSelection() {
-  selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+    selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
 }
 
 function resetPanZoom(e) {
-  panzoom.panzoom('reset');
+    panzoom.panzoom('reset');
 }
 
 function resizeCanvases() {
-  var width = window.innerWidth * 0.99;
+    var width = window.innerWidth * 0.99;
 
-  var ratio = panzoomContainer.height/panzoomContainer.width;
-  var height = width * ratio;
+    var ratio = panzoomContainer.height / panzoomContainer.width;
+    var height = width * ratio;
 
-  panzoomContainer.style.width = width+'px';
-  panzoomContainer.style.height = height+'px';
-  canvas.style.width = width+'px';
-  overlayCanvas.style.width = width+'px';
-  selectionCanvas.style.width = width + 'px';
+    panzoomContainer.style.width = width + 'px';
+    panzoomContainer.style.height = height + 'px';
+    canvas.style.width = width + 'px';
+    overlayCanvas.style.width = width + 'px';
+    selectionCanvas.style.width = width + 'px';
 
-//   canvasContainer.height = window.innerHeight;
-//   $('#canvasContainer').css("height", window.innerHeight + "px");
-  $('#canvasContainer').css("overflow", "visible");
+    //   canvasContainer.height = window.innerHeight;
+    //   $('#canvasContainer').css("height", window.innerHeight + "px");
+    $('#canvasContainer').css("overflow", "visible");
 }
 
 function getMousePos(canvas, evt) {
-  var rect = panzoomContainer.getBoundingClientRect();
-  var transform = $(panzoomContainer).panzoom('getMatrix');
+    var rect = panzoomContainer.getBoundingClientRect();
+    var transform = $(panzoomContainer).panzoom('getMatrix');
 
-  var scale = transform[0];
+    var scale = transform[0];
 
-  scale = rect.width / panzoomContainer.width;
+    scale = rect.width / panzoomContainer.width;
 
-  var mousePos =  {
-    x: Math.floor((evt.clientX - rect.left) / scale),
-    y: Math.floor((evt.clientY - rect.top) / scale)
-  };
+    var mousePos = {
+        x: Math.floor((evt.clientX - rect.left) / scale),
+        y: Math.floor((evt.clientY - rect.top) / scale)
+    };
 
-  // console.log(evt.clientX + "\t" + evt.clientY + "\t" + rect.left + "\t" + rect.top + "\t" + scale + "\t" + mousePos.x + "\t" + mousePos.y);
+    // console.log(evt.clientX + "\t" + evt.clientY + "\t" + rect.left + "\t" + rect.top + "\t" + scale + "\t" + mousePos.x + "\t" + mousePos.y);
 
-  return mousePos;
+    return mousePos;
 }
 
-panzoomContainer.addEventListener('mousemove', evt => {
-  if(!world)
-    return;
+panzoomContainer.addEventListener('mousemove', evt=>{
+    if (!world)
+        return;
 
-  var mousePos = getMousePos(panzoomContainer, evt);
-  var x = mousePos.x;
-  var y = mousePos.y;
+    var mousePos = getMousePos(panzoomContainer, evt);
+    var x = mousePos.x;
+    var y = mousePos.y;
 
-  $("#status").html(mousePos.x + ',' + (mousePos.y));
+    $("#status").html(mousePos.x + ',' + (mousePos.y));
 
-  if(world.tiles) {
-    var tile = getTileAt(mousePos.x, mousePos.y);
+    if (world.tiles) {
+        var tile = getTileAt(mousePos.x, mousePos.y);
 
-    if(tile) {
-      var text = getTileText(tile);
+        if (tile) {
+            var text = getTileText(tile);
 
-      $("#status").html(text + " (" + mousePos.x + ", " + mousePos.y + ")");
+            $("#status").html(text + " (" + mousePos.x + ", " + mousePos.y + ")");
+        }
     }
-  }
-});
+}
+);
 
 $("#panzoomContainer").on('panzoomend', function(evt, panzoom, matrix, changed) {
-  if (changed) return;
-    
-  var mousePos = getMousePos(panzoomContainer, evt);
-  var x = mousePos.x;
-  var y = mousePos.y;
+    if (changed)
+        return;
 
-  selectionX = x;
-  selectionY = y;
+    var mousePos = getMousePos(panzoomContainer, evt);
+    var x = mousePos.x;
+    var y = mousePos.y;
 
-  drawSelectionIndicator();
+    selectionX = x;
+    selectionY = y;
 
-  var tile = getTileAt(x, y);
-  if(tile) {
-    var text = getTileText(tile);
+    drawSelectionIndicator();
 
-    $("#tileInfoList").html("");
+    var tile = getTileAt(x, y);
+    if (tile) {
+        var text = getTileText(tile);
 
-    var chest = tile.chest;
-    if(chest) {
-      if(chest.name.length > 0)
-      text = text + " - " + chest.name;
+        $("#tileInfoList").html("");
 
-      for(var i = 0; i < chest.items.length; i++) {
-        var item = chest.items[i];
-        var prefix = "";
+        var chest = tile.chest;
+        if (chest) {
+            if (chest.name.length > 0)
+                text = text + " - " + chest.name;
 
-        if(item.prefixId > 0 && item.prefixId < settings.ItemPrefix.length)
-          prefix = settings.ItemPrefix[item.prefixId].Name;
+            for (var i = 0; i < chest.items.length; i++) {
+                var item = chest.items[i];
+                var prefix = "";
 
-        var itemName = item.id;
-        for(var itemIndex = 0; itemIndex < settings.Items.length; itemIndex++) {
-          var itemSettings = settings.Items[itemIndex];
-          if(itemSettings.Id == item.id) {
-            itemName = itemSettings.Name;
-            break;
-          }
+                if (item.prefixId > 0 && item.prefixId < settings.ItemPrefix.length)
+                    prefix = settings.ItemPrefix[item.prefixId].Name;
+
+                var itemName = item.id;
+                for (var itemIndex = 0; itemIndex < settings.Items.length; itemIndex++) {
+                    var itemSettings = settings.Items[itemIndex];
+                    if (itemSettings.Id == item.id) {
+                        itemName = itemSettings.Name;
+                        break;
+                    }
+                }
+
+                $("#tileInfoList").append('<li>' + prefix + ' ' + itemName + ' (' + item.count + ')</li>');
+            }
         }
 
+        var sign = tile.sign;
+        if (sign && sign.text) {
+            if (sign.text.length > 0)
+                $("#tileInfoList").append('<li>' + sign.text + '</li>');
+        }
 
-        $("#tileInfoList").append('<li>' + prefix + ' ' + itemName + ' (' + item.count +')</li>');
-      }
+        $("#tile").html(text);
     }
-
-    var sign = tile.sign;
-    if(sign && sign.text) {
-      if(sign.text.length > 0)
-        $("#tileInfoList").append('<li>' + sign.text +'</li>');
-    }
-
-    $("#tile").html(text);
-  }
 
 });
 
 function getTileAt(x, y) {
-  if(!world) return;
+    if (!world)
+        return;
 
-  var index = 2 * x * world.height + y;
-  if(index >= 0 && index < world.tiles.length) {
-    return world.tiles[index];
-  }
+    var index = x * world.height + y;
+    if (index >= 0 && index < world.tiles.length) {
+        return world.tiles[index];
+    }
 
-  return null;
+    return null;
 }
 
 function selectPoint(x, y) {
-  selectionX = x;
-  selectionY = y;
-  drawSelectionIndicator();
+    selectionX = x;
+    selectionY = y;
+    drawSelectionIndicator();
 }
 
 function drawSelectionIndicator() {
-  var x = selectionX + 0.5;
-  var y = selectionY + 0.5;
+    var x = selectionX + 0.5;
+    var y = selectionY + 0.5;
 
-  var lineWidth = 12;
-  var targetWidth = 39;
-  var halfTargetWidth = targetWidth / 2;
+    var lineWidth = 12;
+    var targetWidth = 39;
+    var halfTargetWidth = targetWidth / 2;
 
-  selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
-  selectionCtx.lineWidth = lineWidth;
-  selectionCtx.strokeStyle="rgb(255, 0, 0)";
-  selectionCtx.strokeRect(x - halfTargetWidth, y - halfTargetWidth, targetWidth, targetWidth);
+    selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+    selectionCtx.lineWidth = lineWidth;
+    selectionCtx.strokeStyle = "rgb(255, 0, 0)";
+    selectionCtx.strokeRect(x - halfTargetWidth, y - halfTargetWidth, targetWidth, targetWidth);
 
-  // draw cross-hairs
-  selectionCtx.lineWidth=1;
-  selectionCtx.beginPath();
-  selectionCtx.moveTo(x - halfTargetWidth, y);
-  selectionCtx.lineTo(x - 1, y);
-  selectionCtx.stroke();
-  selectionCtx.beginPath();
-  selectionCtx.moveTo(x + halfTargetWidth, y);
-  selectionCtx.lineTo(x + 1, y);
-  selectionCtx.stroke();
-  selectionCtx.beginPath();
-  selectionCtx.moveTo(x, y - halfTargetWidth);
-  selectionCtx.lineTo(x, y - 1);
-  selectionCtx.stroke();
-  selectionCtx.beginPath();
-  selectionCtx.moveTo(x, y + halfTargetWidth);
-  selectionCtx.lineTo(x, y + 1);
-  selectionCtx.stroke();
+    // draw cross-hairs
+    selectionCtx.lineWidth = 1;
+    selectionCtx.beginPath();
+    selectionCtx.moveTo(x - halfTargetWidth, y);
+    selectionCtx.lineTo(x - 1, y);
+    selectionCtx.stroke();
+    selectionCtx.beginPath();
+    selectionCtx.moveTo(x + halfTargetWidth, y);
+    selectionCtx.lineTo(x + 1, y);
+    selectionCtx.stroke();
+    selectionCtx.beginPath();
+    selectionCtx.moveTo(x, y - halfTargetWidth);
+    selectionCtx.lineTo(x, y - 1);
+    selectionCtx.stroke();
+    selectionCtx.beginPath();
+    selectionCtx.moveTo(x, y + halfTargetWidth);
+    selectionCtx.lineTo(x, y + 1);
+    selectionCtx.stroke();
 }
 
-function getTileText (tile) {
-  var text = "Nothing";
+function getTileText(tile) {
+    var text = "Nothing";
 
-  if(!tile) {
+    if (!tile) {
+        return text;
+    }
+
+    var tileInfo = tile.info;
+
+    if (tileInfo) {
+        if (!tileInfo.parent || !tileInfo.parent.Name) {
+            text = tileInfo.Name;
+        } else if (tileInfo.parent && tileInfo.parent.Name) {
+            text = tileInfo.parent.Name;
+
+            if (tileInfo.Name) {
+                text += " - " + tileInfo.Name;
+
+                if (tileInfo.Variety)
+                    text += " - " + tileInfo.Variety;
+            } else if (tileInfo.Variety) {
+                text += " - " + tileInfo.Variety;
+            }
+        }
+
+        if (tile.TextureU > 0 && tile.TextureV > 0)
+            text += " (" + tile.Type + ", " + tile.TextureU + ", " + tile.TextureV + ")";
+        else if (tile.TextureU > 0)
+            text += " (" + tile.Type + ", " + tile.TextureU + ")";
+        else
+            text += " (" + tile.Type + ")";
+    } else if (tile.WallType || tile.WallType === 0) {
+        if (tile.WallType < settings.Walls.length) {
+            text = settings.Walls[tile.WallType].Name + " (" + tile.WallType + ")";
+        } else {
+            text = "Unknown Wall (" + tile.WallType + ")";
+        }
+    } else if (tile.IsLiquidPresent) {
+        text = "Water";
+
+        if (tile.IsLiquidLava) {
+            text = "Lava";
+        } else if (tile.IsLiquidHoney) {
+            text = "Honey";
+        }
+    }
+
+    if (tile.IsRedWirePresent)
+        text += " (Red Wire)";
+
+    if (tile.IsGreenWirePresent)
+        text += " (Green Wire)";
+
+    if (tile.IsBlueWirePresent)
+        text += " (Blue Wire)";
+
+    if (tile.IsYellowWirePresent)
+        text += " (Yellow Wire)";
+
     return text;
-  }
-
-  var tileInfo = tile.info;
-
-  if(tileInfo) {
-    if(!tileInfo.parent || !tileInfo.parent.Name) {
-       text = tileInfo.Name;
-    }
-    else if(tileInfo.parent && tileInfo.parent.Name) {
-      text = tileInfo.parent.Name;
-
-      if(tileInfo.Name) {
-        text += " - " + tileInfo.Name;
-
-        if(tileInfo.Variety)
-          text += " - " + tileInfo.Variety;
-      }
-      else if (tileInfo.Variety) {
-        text += " - " + tileInfo.Variety;
-      }
-    }
-
-    if(tile.TextureU > 0 && tile.TextureV > 0)
-      text += " (" + tile.Type + ", " + tile.TextureU + ", " + tile.TextureV + ")";
-    else if(tile.TextureU > 0)
-      text += " (" + tile.Type + ", " + tile.TextureU + ")";
-    else
-      text += " (" + tile.Type + ")";
-  }
-  else if (tile.WallType || tile.WallType === 0) {
-    if(tile.WallType < settings.Walls.length) {
-      text = settings.Walls[tile.WallType].Name + " (" + tile.WallType + ")";
-    }
-    else {
-      text = "Unknown Wall (" + tile.WallType + ")";
-    }
-  }
-  else if (tile.IsLiquidPresent) {
-    text = "Water";
-
-    if(tile.IsLiquidLava) {
-      text = "Lava";
-    }
-    else if (tile.IsLiquidHoney) {
-      text = "Honey";
-    }
-  }
-
-  if(tile.IsRedWirePresent)
-    text += " (Red Wire)";
-
-  if(tile.IsGreenWirePresent)
-    text += " (Green Wire)";
-
-  if(tile.IsBlueWirePresent)
-    text += " (Blue Wire)";
-
-  if(tile.IsYellowWirePresent)
-    text += " (Yellow Wire)";
-
-  return text;
 }
 
-function fileNameChanged (evt) {
-  file = evt.target.files[0];
+function fileNameChanged(evt) {
+    file = evt.target.files[0];
 
-  reloadWorld();
+    reloadWorld();
 }
 
 function reloadWorld() {
-  var worker = new Worker('resources/js/WorldLoader.js');
-  worker.addEventListener('message', onWorldLoaderWorkerMessage);
+    var worker = new Worker('resources/js/WorldLoader.js');
+    worker.addEventListener('message', onWorldLoaderWorkerMessage);
 
-  worker.postMessage(file);
+    worker.postMessage(file);
 }
 
 function onWorldLoaderWorkerMessage(e) {
-  if(e.data.status)
-    $("#status").html(e.data.status);
+    if (e.data.status)
+        $("#status").html(e.data.status);
 
-  var x = 0;
-  var i = 0;
-  var tile;
+    var x = 0;
+    var i = 0;
+    var tile;
 
-  if(e.data.tiles) {
-    x = e.data.x;
+    if (e.data.tiles) {
+        let renderStart = performance.now();
+        x = e.data.x;
+        let imageData = ctx.createImageData(1, world.height);
+        for (y = 0; y < e.data.tiles.length; y++) {
+            tile = e.data.tiles[y];
 
-		for(x = e.data.x; x <= e.data.x + 1; x++) {
-	    for(y = 0; y < e.data.tiles.length; y++) {
-	      tile = e.data.tiles[y];
-
-	      if(tile) {
-	        tile.info = getTileInfo(tile);
-	        world.tiles.push(tile);
-
-	        var c = getTileColor(y, tile, world);
-	        if(!c) c = {"r": 0, "g": 0, "b": 0 };
-
-	        ctx.fillStyle = "rgb(" + c.r + ", " + c.g + ", " + c.b + ")";
-	        ctx.fillRect(x, y, 1, 1);
-	      }
-	    }
-		}
-  }
-
-  if(e.data.chests) {
-    world.chests = e.data.chests;
-
-    for(i = 0; i < e.data.chests.length; i++) {
-      var chest = e.data.chests[i];
-
-      var idx = chest.x * world.height + chest.y;
-      world.tiles[idx].chest = chest;
-      world.tiles[idx + 1].chest = chest;
-
-      idx = (chest.x + 1) * world.height + chest.y;
-      world.tiles[idx].chest = chest;
-      world.tiles[idx + 1].chest = chest;
+            if (tile) {
+                tile.info = getTileInfo(tile);
+                world.tiles.push(tile);
+                let imageIndex = y * 4;
+                var c = getTileColor(y, tile, world);
+                let b = c & 255;
+                let g = c >> 8 & 255;
+                let r = c >> 16 & 255;
+                imageData.data[imageIndex] = r;
+                imageData.data[imageIndex + 1] = g;
+                imageData.data[imageIndex + 2] = b;
+                imageData.data[imageIndex + 3] = 255;
+                // console.log(imageData)
+            }
+        }
+        ctx.putImageData(imageData, x, 0);
+        let renderEnd = performance.now();
+        top.renderTime = renderEnd - renderStart;
     }
-  }
 
-  if(e.data.signs) {
-    world.signs = e.data.signs;
+    if (e.data.chests) {
+        world.chests = e.data.chests;
 
-    for(i = 0; i < e.data.signs.length; i++) {
-      var sign = e.data.signs[i];
+        for (i = 0; i < e.data.chests.length; i++) {
+            var chest = e.data.chests[i];
 
-      var tileIndex = sign.x * world.height + sign.y;
-      world.tiles[tileIndex].sign = sign;
-      world.tiles[tileIndex + 1].sign = sign;
+            var idx = chest.x * world.height + chest.y;
+            world.tiles[idx].chest = chest;
+            world.tiles[idx + 1].chest = chest;
 
-      tileIndex = (sign.x + 1) * world.height + sign.y;
-      world.tiles[tileIndex].sign = sign;
-      world.tiles[tileIndex + 1].sign = sign;
+            idx = (chest.x + 1) * world.height + chest.y;
+            world.tiles[idx].chest = chest;
+            world.tiles[idx + 1].chest = chest;
+        }
     }
-  }
 
-  if(e.data.npcs) {
-    addNpcs(e.data.npcs);
-  }
+    if (e.data.signs) {
+        world.signs = e.data.signs;
 
-  if(e.data.world) {
-    world = e.data.world;
+        for (i = 0; i < e.data.signs.length; i++) {
+            var sign = e.data.signs[i];
 
-    panzoomContainer.width = world.width;
-    panzoomContainer.height = world.height;
-    canvas.width = world.width;
-    canvas.height = world.height;
-    overlayCanvas.width = world.width;
-    overlayCanvas.height = world.height;
-    selectionCanvas.width = world.width;
-    selectionCanvas.height = world.height;
+            var tileIndex = sign.x * world.height + sign.y;
+            world.tiles[tileIndex].sign = sign;
+            world.tiles[tileIndex + 1].sign = sign;
 
-    world.tiles = [];
+            tileIndex = (sign.x + 1) * world.height + sign.y;
+            world.tiles[tileIndex].sign = sign;
+            world.tiles[tileIndex + 1].sign = sign;
+        }
+    }
 
-    resizeCanvases();
+    if (e.data.npcs) {
+        addNpcs(e.data.npcs);
+    }
 
-    $("#worldPropertyList").append('<li>Version: ' + world.version + '</li>');
-    $("#worldPropertyList").append('<li>Name: ' + world.name + '</li>');
-    $("#worldPropertyList").append('<li>Id: ' + world.id + '</li>');
-    $("#worldPropertyList").append('<li>Width: ' + world.width + '</li>');
-    $("#worldPropertyList").append('<li>Height: ' + world.height + '</li>');
-    $("#worldPropertyList").append('<li>expertMode: ' + world.expertMode + '</li>');
-    $("#worldPropertyList").append('<li>moonType: ' + world.moonType + '</li>');
-    $("#worldPropertyList").append('<li>spawnX: ' + world.spawnX + '</li>');
-    $("#worldPropertyList").append('<li>spawnY: ' + world.spawnY + '</li>');
-    $("#worldPropertyList").append('<li>SurfaceY: ' + world.worldSurfaceY + '</li>');
-    $("#worldPropertyList").append('<li>rockLayerY: ' + world.rockLayerY + '</li>');
-    $("#worldPropertyList").append('<li>gameTime: ' + world.gameTime + '</li>');
-    $("#worldPropertyList").append('<li>isDay: ' + world.isDay + '</li>');
-    $("#worldPropertyList").append('<li>moonPhase: ' + world.moonPhase + '</li>');
-    $("#worldPropertyList").append('<li>bloodMoon: ' + world.bloodMoon + '</li>');
-    $("#worldPropertyList").append('<li>eclipse: ' + world.eclipse + '</li>');
-    $("#worldPropertyList").append('<li>dungeonX: ' + world.dungeonX + '</li>');
-    $("#worldPropertyList").append('<li>dungeonY: ' + world.dungeonY + '</li>');
-    $("#worldPropertyList").append('<li>crimsonWorld: ' + world.crimsonWorld + '</li>');
-    $("#worldPropertyList").append('<li>killedEyeOfCthulu: ' + world.killedEyeOfCthulu + '</li>');
-    $("#worldPropertyList").append('<li>killedEaterOfWorlds: ' + world.killedEaterOfWorlds + '</li>');
-    $("#worldPropertyList").append('<li>killedSkeletron: ' + world.killedSkeletron + '</li>');
-    $("#worldPropertyList").append('<li>killedQueenBee: ' + world.killedQueenBee + '</li>');
-    $("#worldPropertyList").append('<li>killedTheDestroyer: ' + world.killedTheDestroyer + '</li>');
-    $("#worldPropertyList").append('<li>killedTheTwins: ' + world.killedTheTwins + '</li>');
-    $("#worldPropertyList").append('<li>killedSkeletronPrime: ' + world.killedSkeletronPrime + '</li>');
-    $("#worldPropertyList").append('<li>killedAnyHardmodeBoss: ' + world.killedAnyHardmodeBoss + '</li>');
-    $("#worldPropertyList").append('<li>killedPlantera: ' + world.killedPlantera + '</li>');
-    $("#worldPropertyList").append('<li>killedGolem: ' + world.killedGolem + '</li>');
-    $("#worldPropertyList").append('<li>killedSlimeKing: ' + world.killedSlimeKing + '</li>');
-    $("#worldPropertyList").append('<li>savedGoblinTinkerer: ' + world.savedGoblinTinkerer + '</li>');
-    $("#worldPropertyList").append('<li>savedWizard: ' + world.savedWizard + '</li>');
-    $("#worldPropertyList").append('<li>savedMechanic: ' + world.savedMechanic + '</li>');
-    $("#worldPropertyList").append('<li>defeatedGoblinInvasion: ' + world.defeatedGoblinInvasion + '</li>');
-    $("#worldPropertyList").append('<li>killedClown: ' + world.killedClown + '</li>');
-    $("#worldPropertyList").append('<li>defeatedFrostLegion: ' + world.defeatedFrostLegion + '</li>');
-    $("#worldPropertyList").append('<li>defeatedPirates: ' + world.defeatedPirates + '</li>');
-    $("#worldPropertyList").append('<li>brokeAShadowOrb: ' + world.brokeAShadowOrb + '</li>');
-    $("#worldPropertyList").append('<li>meteorSpawned: ' + world.meteorSpawned + '</li>');
-    $("#worldPropertyList").append('<li>shadowOrbsbrokenmod3: ' + world.shadowOrbsbrokenmod3 + '</li>');
-    $("#worldPropertyList").append('<li>altarsSmashed: ' + world.altarsSmashed + '</li>');
-    $("#worldPropertyList").append('<li>hardMode: ' + world.hardMode + '</li>');
-    $("#worldPropertyList").append('<li>goblinInvasionDelay: ' + world.goblinInvasionDelay + '</li>');
-    $("#worldPropertyList").append('<li>goblinInvasionSize: ' + world.goblinInvasionSize + '</li>');
-    $("#worldPropertyList").append('<li>goblinInvasionType: ' + world.goblinInvasionType + '</li>');
-    $("#worldPropertyList").append('<li>goblinInvasionX: ' + world.goblinInvasionX + '</li>');
-    $("#worldPropertyList").append('<li>slimeRainTime: ' + world.slimeRainTime + '</li>');
-    $("#worldPropertyList").append('<li>sundialCooldown: ' + world.sundialCooldown + '</li>');
-    $("#worldPropertyList").append('<li>isRaining: ' + world.isRaining + '</li>');
-    $("#worldPropertyList").append('<li>rainTime: ' + world.rainTime + '</li>');
-    $("#worldPropertyList").append('<li>maxRain: ' + world.maxRain + '</li>');
-    $("#worldPropertyList").append('<li>tier1OreID: ' + world.tier1OreID + '</li>');
-    $("#worldPropertyList").append('<li>tier2OreID: ' + world.tier2OreID + '</li>');
-    $("#worldPropertyList").append('<li>tier3OreID: ' + world.tier3OreID + '</li>');
-    $("#worldPropertyList").append('<li>treeStyle: ' + world.treeStyle + '</li>');
-    $("#worldPropertyList").append('<li>corruptionStyle: ' + world.corruptionStyle + '</li>');
-    $("#worldPropertyList").append('<li>jungleStyle: ' + world.jungleStyle + '</li>');
-    $("#worldPropertyList").append('<li>snowStyle: ' + world.snowStyle + '</li>');
-    $("#worldPropertyList").append('<li>hallowStyle: ' + world.hallowStyle + '</li>');
-    $("#worldPropertyList").append('<li>crimsonStyle: ' + world.crimsonStyle + '</li>');
-    $("#worldPropertyList").append('<li>desertStyle: ' + world.desertStyle + '</li>');
-    $("#worldPropertyList").append('<li>oceanStyle: ' + world.oceanStyle + '</li>');
-    $("#worldPropertyList").append('<li>cloudBackground: ' + world.cloudBackground + '</li>');
-    $("#worldPropertyList").append('<li>numberofClouds: ' + world.numberofClouds + '</li>');
-    $("#worldPropertyList").append('<li>windSpeed: ' + world.windSpeed + '</li>');
-    $("#worldPropertyList").append('<li>savedAngler: ' + world.savedAngler + '</li>');
-    $("#worldPropertyList").append('<li>anglerQuest: ' + world.anglerQuest + '</li>');
-    $("#worldPropertyList").append('<li>savedStylist: ' + world.savedStylist + '</li>');
-    $("#worldPropertyList").append('<li>savedTaxCollector: ' + world.savedTaxCollector + '</li>');
-    $("#worldPropertyList").append('<li>invasionSizeStart: ' + world.invasionSizeStart + '</li>');
-    $("#worldPropertyList").append('<li>tempCultistDelay: ' + world.tempCultistDelay + '</li>');
-    $("#worldPropertyList").append('<li>fastForwardTime: ' + world.fastForwardTime + '</li>');
-    $("#worldPropertyList").append('<li>downedFishron: ' + world.downedFishron + '</li>');
-    $("#worldPropertyList").append('<li>downedMartians: ' + world.downedMartians + '</li>');
-    $("#worldPropertyList").append('<li>downedAncientCultist: ' + world.downedAncientCultist + '</li>');
-    $("#worldPropertyList").append('<li>downedMoonlord: ' + world.downedMoonlord + '</li>');
-    $("#worldPropertyList").append('<li>downedHalloweenKing: ' + world.downedHalloweenKing + '</li>');
-    $("#worldPropertyList").append('<li>downedHalloweenTree: ' + world.downedHalloweenTree + '</li>');
-    $("#worldPropertyList").append('<li>downedChristmasIceQueen: ' + world.downedChristmasIceQueen + '</li>');
-    $("#worldPropertyList").append('<li>downedChristmasSantank: ' + world.downedChristmasSantank + '</li>');
-    $("#worldPropertyList").append('<li>downedChristmasTree: ' + world.downedChristmasTree + '</li>');
-    $("#worldPropertyList").append('<li>downedTowerSolar: ' + world.downedTowerSolar + '</li>');
-    $("#worldPropertyList").append('<li>downedTowerVortex: ' + world.downedTowerVortex + '</li>');
-    $("#worldPropertyList").append('<li>downedTowerNebula: ' + world.downedTowerNebula + '</li>');
-    $("#worldPropertyList").append('<li>downedTowerStardust: ' + world.downedTowerStardust + '</li>');
-    $("#worldPropertyList").append('<li>towerActiveSolar: ' + world.towerActiveSolar + '</li>');
-    $("#worldPropertyList").append('<li>towerActiveVortex: ' + world.towerActiveVortex + '</li>');
-    $("#worldPropertyList").append('<li>towerActiveNebula: ' + world.towerActiveNebula + '</li>');
-    $("#worldPropertyList").append('<li>towerActiveStardust: ' + world.towerActiveStardust + '</li>');
-    $("#worldPropertyList").append('<li>lunarApocalypseIsUp: ' + world.lunarApocalypseIsUp + '</li>');
-    $("#worldPropertyList").append('<li>partyManual: ' + world.partyManual + '</li>');
-    $("#worldPropertyList").append('<li>partyGenuine: ' + world.partyGenuine + '</li>');
-    $("#worldPropertyList").append('<li>partyCooldown: ' + world.partyCooldown + '</li>');
-    $("#worldPropertyList").append('<li>sandstormHappening: ' + world.sandstormHappening + '</li>');
-    $("#worldPropertyList").append('<li>sandstormTimeLeft: ' + world.sandstormTimeLeft + '</li>');
-    $("#worldPropertyList").append('<li>sandstormSeverity: ' + world.sandstormSeverity + '</li>');
-    $("#worldPropertyList").append('<li>sandstormIntendedSeverity: ' + world.sandstormIntendedSeverity + '</li>');
-  }
+    if (e.data.world) {
+        world = e.data.world;
+
+        panzoomContainer.width = world.width;
+        panzoomContainer.height = world.height;
+        canvas.width = world.width;
+        canvas.height = world.height;
+        overlayCanvas.width = world.width;
+        overlayCanvas.height = world.height;
+        selectionCanvas.width = world.width;
+        selectionCanvas.height = world.height;
+
+        world.tiles = [];
+
+        resizeCanvases();
+
+        $("#worldPropertyList").append('<li>Version: ' + world.version + '</li>');
+        $("#worldPropertyList").append('<li>Name: ' + world.name + '</li>');
+        $("#worldPropertyList").append('<li>Id: ' + world.id + '</li>');
+        $("#worldPropertyList").append('<li>Width: ' + world.width + '</li>');
+        $("#worldPropertyList").append('<li>Height: ' + world.height + '</li>');
+        $("#worldPropertyList").append('<li>expertMode: ' + world.expertMode + '</li>');
+        $("#worldPropertyList").append('<li>moonType: ' + world.moonType + '</li>');
+        $("#worldPropertyList").append('<li>spawnX: ' + world.spawnX + '</li>');
+        $("#worldPropertyList").append('<li>spawnY: ' + world.spawnY + '</li>');
+        $("#worldPropertyList").append('<li>SurfaceY: ' + world.worldSurfaceY + '</li>');
+        $("#worldPropertyList").append('<li>rockLayerY: ' + world.rockLayerY + '</li>');
+        $("#worldPropertyList").append('<li>gameTime: ' + world.gameTime + '</li>');
+        $("#worldPropertyList").append('<li>isDay: ' + world.isDay + '</li>');
+        $("#worldPropertyList").append('<li>moonPhase: ' + world.moonPhase + '</li>');
+        $("#worldPropertyList").append('<li>bloodMoon: ' + world.bloodMoon + '</li>');
+        $("#worldPropertyList").append('<li>eclipse: ' + world.eclipse + '</li>');
+        $("#worldPropertyList").append('<li>dungeonX: ' + world.dungeonX + '</li>');
+        $("#worldPropertyList").append('<li>dungeonY: ' + world.dungeonY + '</li>');
+        $("#worldPropertyList").append('<li>crimsonWorld: ' + world.crimsonWorld + '</li>');
+        $("#worldPropertyList").append('<li>killedEyeOfCthulu: ' + world.killedEyeOfCthulu + '</li>');
+        $("#worldPropertyList").append('<li>killedEaterOfWorlds: ' + world.killedEaterOfWorlds + '</li>');
+        $("#worldPropertyList").append('<li>killedSkeletron: ' + world.killedSkeletron + '</li>');
+        $("#worldPropertyList").append('<li>killedQueenBee: ' + world.killedQueenBee + '</li>');
+        $("#worldPropertyList").append('<li>killedTheDestroyer: ' + world.killedTheDestroyer + '</li>');
+        $("#worldPropertyList").append('<li>killedTheTwins: ' + world.killedTheTwins + '</li>');
+        $("#worldPropertyList").append('<li>killedSkeletronPrime: ' + world.killedSkeletronPrime + '</li>');
+        $("#worldPropertyList").append('<li>killedAnyHardmodeBoss: ' + world.killedAnyHardmodeBoss + '</li>');
+        $("#worldPropertyList").append('<li>killedPlantera: ' + world.killedPlantera + '</li>');
+        $("#worldPropertyList").append('<li>killedGolem: ' + world.killedGolem + '</li>');
+        $("#worldPropertyList").append('<li>killedSlimeKing: ' + world.killedSlimeKing + '</li>');
+        $("#worldPropertyList").append('<li>savedGoblinTinkerer: ' + world.savedGoblinTinkerer + '</li>');
+        $("#worldPropertyList").append('<li>savedWizard: ' + world.savedWizard + '</li>');
+        $("#worldPropertyList").append('<li>savedMechanic: ' + world.savedMechanic + '</li>');
+        $("#worldPropertyList").append('<li>defeatedGoblinInvasion: ' + world.defeatedGoblinInvasion + '</li>');
+        $("#worldPropertyList").append('<li>killedClown: ' + world.killedClown + '</li>');
+        $("#worldPropertyList").append('<li>defeatedFrostLegion: ' + world.defeatedFrostLegion + '</li>');
+        $("#worldPropertyList").append('<li>defeatedPirates: ' + world.defeatedPirates + '</li>');
+        $("#worldPropertyList").append('<li>brokeAShadowOrb: ' + world.brokeAShadowOrb + '</li>');
+        $("#worldPropertyList").append('<li>meteorSpawned: ' + world.meteorSpawned + '</li>');
+        $("#worldPropertyList").append('<li>shadowOrbsbrokenmod3: ' + world.shadowOrbsbrokenmod3 + '</li>');
+        $("#worldPropertyList").append('<li>altarsSmashed: ' + world.altarsSmashed + '</li>');
+        $("#worldPropertyList").append('<li>hardMode: ' + world.hardMode + '</li>');
+        $("#worldPropertyList").append('<li>goblinInvasionDelay: ' + world.goblinInvasionDelay + '</li>');
+        $("#worldPropertyList").append('<li>goblinInvasionSize: ' + world.goblinInvasionSize + '</li>');
+        $("#worldPropertyList").append('<li>goblinInvasionType: ' + world.goblinInvasionType + '</li>');
+        $("#worldPropertyList").append('<li>goblinInvasionX: ' + world.goblinInvasionX + '</li>');
+        $("#worldPropertyList").append('<li>slimeRainTime: ' + world.slimeRainTime + '</li>');
+        $("#worldPropertyList").append('<li>sundialCooldown: ' + world.sundialCooldown + '</li>');
+        $("#worldPropertyList").append('<li>isRaining: ' + world.isRaining + '</li>');
+        $("#worldPropertyList").append('<li>rainTime: ' + world.rainTime + '</li>');
+        $("#worldPropertyList").append('<li>maxRain: ' + world.maxRain + '</li>');
+        $("#worldPropertyList").append('<li>tier1OreID: ' + world.tier1OreID + '</li>');
+        $("#worldPropertyList").append('<li>tier2OreID: ' + world.tier2OreID + '</li>');
+        $("#worldPropertyList").append('<li>tier3OreID: ' + world.tier3OreID + '</li>');
+        $("#worldPropertyList").append('<li>treeStyle: ' + world.treeStyle + '</li>');
+        $("#worldPropertyList").append('<li>corruptionStyle: ' + world.corruptionStyle + '</li>');
+        $("#worldPropertyList").append('<li>jungleStyle: ' + world.jungleStyle + '</li>');
+        $("#worldPropertyList").append('<li>snowStyle: ' + world.snowStyle + '</li>');
+        $("#worldPropertyList").append('<li>hallowStyle: ' + world.hallowStyle + '</li>');
+        $("#worldPropertyList").append('<li>crimsonStyle: ' + world.crimsonStyle + '</li>');
+        $("#worldPropertyList").append('<li>desertStyle: ' + world.desertStyle + '</li>');
+        $("#worldPropertyList").append('<li>oceanStyle: ' + world.oceanStyle + '</li>');
+        $("#worldPropertyList").append('<li>cloudBackground: ' + world.cloudBackground + '</li>');
+        $("#worldPropertyList").append('<li>numberofClouds: ' + world.numberofClouds + '</li>');
+        $("#worldPropertyList").append('<li>windSpeed: ' + world.windSpeed + '</li>');
+        $("#worldPropertyList").append('<li>savedAngler: ' + world.savedAngler + '</li>');
+        $("#worldPropertyList").append('<li>anglerQuest: ' + world.anglerQuest + '</li>');
+        $("#worldPropertyList").append('<li>savedStylist: ' + world.savedStylist + '</li>');
+        $("#worldPropertyList").append('<li>savedTaxCollector: ' + world.savedTaxCollector + '</li>');
+        $("#worldPropertyList").append('<li>invasionSizeStart: ' + world.invasionSizeStart + '</li>');
+        $("#worldPropertyList").append('<li>tempCultistDelay: ' + world.tempCultistDelay + '</li>');
+        $("#worldPropertyList").append('<li>fastForwardTime: ' + world.fastForwardTime + '</li>');
+        $("#worldPropertyList").append('<li>downedFishron: ' + world.downedFishron + '</li>');
+        $("#worldPropertyList").append('<li>downedMartians: ' + world.downedMartians + '</li>');
+        $("#worldPropertyList").append('<li>downedAncientCultist: ' + world.downedAncientCultist + '</li>');
+        $("#worldPropertyList").append('<li>downedMoonlord: ' + world.downedMoonlord + '</li>');
+        $("#worldPropertyList").append('<li>downedHalloweenKing: ' + world.downedHalloweenKing + '</li>');
+        $("#worldPropertyList").append('<li>downedHalloweenTree: ' + world.downedHalloweenTree + '</li>');
+        $("#worldPropertyList").append('<li>downedChristmasIceQueen: ' + world.downedChristmasIceQueen + '</li>');
+        $("#worldPropertyList").append('<li>downedChristmasSantank: ' + world.downedChristmasSantank + '</li>');
+        $("#worldPropertyList").append('<li>downedChristmasTree: ' + world.downedChristmasTree + '</li>');
+        $("#worldPropertyList").append('<li>downedTowerSolar: ' + world.downedTowerSolar + '</li>');
+        $("#worldPropertyList").append('<li>downedTowerVortex: ' + world.downedTowerVortex + '</li>');
+        $("#worldPropertyList").append('<li>downedTowerNebula: ' + world.downedTowerNebula + '</li>');
+        $("#worldPropertyList").append('<li>downedTowerStardust: ' + world.downedTowerStardust + '</li>');
+        $("#worldPropertyList").append('<li>towerActiveSolar: ' + world.towerActiveSolar + '</li>');
+        $("#worldPropertyList").append('<li>towerActiveVortex: ' + world.towerActiveVortex + '</li>');
+        $("#worldPropertyList").append('<li>towerActiveNebula: ' + world.towerActiveNebula + '</li>');
+        $("#worldPropertyList").append('<li>towerActiveStardust: ' + world.towerActiveStardust + '</li>');
+        $("#worldPropertyList").append('<li>lunarApocalypseIsUp: ' + world.lunarApocalypseIsUp + '</li>');
+        $("#worldPropertyList").append('<li>partyManual: ' + world.partyManual + '</li>');
+        $("#worldPropertyList").append('<li>partyGenuine: ' + world.partyGenuine + '</li>');
+        $("#worldPropertyList").append('<li>partyCooldown: ' + world.partyCooldown + '</li>');
+        $("#worldPropertyList").append('<li>sandstormHappening: ' + world.sandstormHappening + '</li>');
+        $("#worldPropertyList").append('<li>sandstormTimeLeft: ' + world.sandstormTimeLeft + '</li>');
+        $("#worldPropertyList").append('<li>sandstormSeverity: ' + world.sandstormSeverity + '</li>');
+        $("#worldPropertyList").append('<li>sandstormIntendedSeverity: ' + world.sandstormIntendedSeverity + '</li>');
+    }
 }
 
 function addNpcs(npcs) {
-  world.npcs = npcs;
+    world.npcs = npcs;
 
-  for(var i = 0; i < npcs.length; i++) {
-    var npc = npcs[i];
+    for (var i = 0; i < npcs.length; i++) {
+        var npc = npcs[i];
 
-    var npcText = npc.name;
-    if(npc.type != npc.name) {
-      npcText += " the " + npc.type;
+        var npcText = npc.name;
+        if (npc.type != npc.name) {
+            npcText += " the " + npc.type;
+        }
+
+        $("#npcList").append('<li><a href="#" onclick="selectPoint(' + npc.x + ', ' + npc.y + ')">' + npcText + '</a></li>');
     }
-
-    $("#npcList").append('<li><a href="#" onclick="selectPoint(' + npc.x + ', ' + npc.y + ')">' + npcText + '</a></li>');
-  }
 }
 
+const skyColor = rgb(132, 170, 248)
+  , rockColor = rgb(88, 61, 46)
+  , hellColor = rgb(74, 67, 60);
+nullColor = 0;
 function getTileColor(y, tile, world) {
-  if(tile.IsActive) {
-    return tileColors[tile.Type][0];
-  }
+    if (tile.IsActive) {
+        return tileColors[tile.Type][0];
+    }
 
-  if (tile.IsWallPresent) {
-    return wallColors[tile.WallType][0];
-  }
+    if (tile.IsWallPresent) {
+        return wallColors[tile.WallType][0];
+    }
 
-  if (tile.IsLiquidPresent) {
-    if(tile.IsLiquidLava)
-      return liquidColors[1];
-    else if (tile.IsLiquidHoney)
-      return liquidColors[2];
-    else
-      return liquidColors[0];
-  }
+    if (tile.IsLiquidPresent) {
+        if (tile.IsLiquidLava)
+            return liquidColors[1];
+        else if (tile.IsLiquidHoney)
+            return liquidColors[2];
+        else
+            return liquidColors[0];
+    }
 
-  if(y < world.worldSurfaceY)
-    return { "r": 132, "g": 170, "b": 248 };
+    if (y < world.worldSurfaceY)
+        return skyColor;
 
-  if(y < world.rockLayerY)
-    return { "r": 88, "g": 61, "b": 46 };
+    if (y < world.rockLayerY)
+        return rockColor;
 
-  if(y < world.hellLayerY)
-    return { "r": 74, "g": 67, "b": 60 };
+    if (y < world.hellLayerY)
+        return hellColor;
 
-  return { "r": 0, "g": 0, "b": 0 };
+    return nullColor;
 }
 
 function saveMapImage() {
-  var newCanvas = document.createElement("canvas");
-  var newContext = newCanvas.getContext("2d");
+    var newCanvas = document.createElement("canvas");
+    var newContext = newCanvas.getContext("2d");
 
-  newCanvas.height = world.height;
-  newCanvas.width = world.width;
+    newCanvas.height = world.height;
+    newCanvas.width = world.width;
 
-  newContext.drawImage(canvas, 0, 0);
-  newContext.drawImage(overlayCanvas, 0, 0);
-  newContext.drawImage(selectionCanvas, 0, 0);
+    newContext.drawImage(canvas, 0, 0);
+    newContext.drawImage(overlayCanvas, 0, 0);
+    newContext.drawImage(selectionCanvas, 0, 0);
 
-  newCanvas.toBlob(function(blob) {
-    saveAs(blob, world.name + ".png");
-  });
+    newCanvas.toBlob(function(blob) {
+        saveAs(blob, world.name + ".png");
+    });
 }

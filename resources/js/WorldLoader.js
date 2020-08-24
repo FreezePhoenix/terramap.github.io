@@ -19,7 +19,7 @@ var start = function(file) {
 
     ds.endianness = DataStream.LITTLE_ENDIAN;
 
-    var world = {};
+    var world = {draws:0};
 
     self.postMessage({
         'status': "Loading world file..."
@@ -31,16 +31,18 @@ var start = function(file) {
 function readWorldFile(reader, world) {
     readFileFormatHeader(reader, world);
     readProperties(reader, world);
-    readTiles(reader, world);
-    readChests(reader, world);
-    readSigns(reader, world);
-    readNpcs(reader, world);
+    readTiles(reader, world).then(()=>{
+        readChests(reader, world);
+        readSigns(reader, world);
+        readNpcs(reader, world);
 
-    self.postMessage({
-        'status': "Done.",
-        'done': true
-    });
-    console.log(world)
+        self.postMessage({
+            'status': "Done.",
+            'done': true
+        });
+        console.log(world)
+    }
+    );
 }
 
 function readFileFormatHeader(reader, world) {
@@ -342,7 +344,7 @@ function readProperties(reader, world) {
     world.hellLayerY = hellLevel;
 }
 
-function readTiles(reader, world) {
+async function readTiles(reader, world) {
     self.postMessage({
         'status': "Reading world tiles...",
         'world': world,
@@ -368,7 +370,7 @@ function readTiles(reader, world) {
 
     for (x = 0; x < world.width; x++) {
         // world.tiles[x] = new Array(world.height);
-
+        let start = performance.now();
         for (y = 0; y < world.height; y++) {
             num2 = -1;
             let b2 = 0;
@@ -456,11 +458,9 @@ function readTiles(reader, world) {
                     tile.WallType = (b4 << 8 | tile.WallType);
                 }
             }
-            b4 = (b3 & 192) >> 6;
             k = 0;
             switch ((b3 & 192) >> 6) {
             case 0:
-                k = 0;
                 break;
             case 1:
                 k = reader.readUint8();
@@ -482,19 +482,20 @@ function readTiles(reader, world) {
         }
 
         tilesProcessed += world.height / 2;
-
-        if (x % 2 == 0 || true) {
-            self.postMessage({
-                'status': "Reading tile " + tilesProcessed + " of " + world.totalTileCount,
-                // 'tilesProcessed': tilesProcessed,
-                // 'totalTileCount': world.totalTileCount,
-                'x': x,
-                'tiles': tiles,
-            });
-            tiles = [];
-        }
+        let end = performance.now();
+        self.postMessage({
+            'status': "Reading tile " + tilesProcessed + " of " + world.totalTileCount,
+            // 'tilesProcessed': tilesProcessed,
+            // 'totalTileCount': world.totalTileCount,
+            'x': x,
+            'tiles': tiles,
+        });
+        tiles = [];
+        await sleep(5);
     }
 }
+
+const sleep = ms=>new Promise(r=>setTimeout(r, ms));
 
 function readChests(reader, world) {
     var chests = [];
